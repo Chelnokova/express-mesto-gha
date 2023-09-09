@@ -30,7 +30,7 @@ const deleteCard = (req, res) => {
     .catch(() => res.status(404).send({ messege: 'Карточка с указанным _id не найдена.' }));
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -47,7 +47,7 @@ const likeCard = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ messege: 'Переданы некорректные данные для постановки/снятии лайка. ' });
       } else {
-        res.status(500).send({ messege: 'Ошибка по умолчанию.' });
+        next(err);
       }
     });
 };
