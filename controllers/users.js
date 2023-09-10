@@ -56,13 +56,12 @@ const updateUserProfile = (req, res) => {
     req.user._id,
     { name, about },
     opts,
-  )
-    .then((user) => {
-      if (!user) {
-        return res.status(NOT_FOUND).send({ message: 'Пользователь c указанному _id не найден.' });
-      }
-      res.send({ data: user });
-    })
+  ).then((user) => {
+    if (!user) {
+      return res.status(NOT_FOUND).send({ message: 'Пользователь c указанному _id не найден.' });
+    }
+    return res.send({ data: user });
+  })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
@@ -86,7 +85,7 @@ const updateUserAvatar = (req, res) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: 'Пользователь c указанному _id не найден.' });
       }
-      res.send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
