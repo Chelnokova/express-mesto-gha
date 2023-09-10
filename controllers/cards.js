@@ -26,8 +26,20 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then(() => res.send({ message: 'Успешно удалено' }))
-    .catch(() => res.status(404).send({ messege: 'Карточка с указанным _id не найдена.' }));
+    .then((r) => {
+      if (r === null) {
+        res.status(404).send({ messege: 'Карточка с указанным _id не найдена.' });
+      } else {
+        res.send({ message: 'Успешно удалено' });
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
+      } else {
+        res.status(500).send({ messege: 'Ошибка по умолчанию.' });
+      }
+    });
 };
 
 const likeCard = (req, res, next) => {
