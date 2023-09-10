@@ -5,7 +5,7 @@ const getUsers = (req, res) => {
     .then((users) => {
       res.status(200).send({ users });
     })
-    .catch((err) => res.status(500).send({ messege: `Произошла ошибка: ${err}` }));
+    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err}` }));
 };
 
 const getUser = (req, res) => {
