@@ -26,23 +26,13 @@ app.use((req, res, next) => {
 
   next();
 });
-
+app.use('/', express.json());
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use('/', (req, res) => {
-  res.send('Hello World');
+app.use('*', (req, res) => {
+  res.status(404).send({ message: 'Неправильный путь' });
 });
-
-// app.get('/users', (req, res) => {
-//   User.find({})
-//     .then((user) => {
-//       res.send({ data: user });
-//     })
-//     .catch((err) => {
-//       console.log(`Ошибка ${err}`)
-//     })
-// })
 
 app.listen(PORT, () => {
   console.log('Сервер запущен');

@@ -19,8 +19,12 @@ const getUser = (req, res) => {
         res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       }
     })
-    .catch(() => {
-      res.status(400).send({ message: 'Ошибка по умолчанию.' });
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+      } else {
+        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+      }
     });
 };
 
