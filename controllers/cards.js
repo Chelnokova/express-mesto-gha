@@ -42,7 +42,7 @@ const deleteCard = (req, res) => {
     });
 };
 
-const likeCard = (req, res, next) => {
+const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -56,10 +56,10 @@ const likeCard = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ messege: 'Переданы некорректные данные для постановки/снятии лайка. ' });
       } else {
-        next(err);
+        res.status(500).send({ messege: `${err.name}` });
       }
     });
 };
@@ -77,10 +77,10 @@ const dislikeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ messege: 'Переданы некорректные данные для постановки/снятии лайка. ' });
       } else {
-        res.status(500).send({ messege: 'Ошибка по умолчанию.' });
+        res.status(500).send({ messege: `${err.name}` });
       }
     });
 };
