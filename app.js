@@ -47,13 +47,14 @@ app.use('*', (req, res) => {
   res.status(NOT_FOUND).send({ message: 'Неправильный путь' });
 });
 
+app.use(errors());
+
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = statusCode === 500 ? 'На севрвере произошла ошибка' : err.message;
   res.status(statusCode).send({ message });
   next();
 });
-app.use(errors());
 
 app.listen(PORT, () => {
   console.log('Сервер запущен');
