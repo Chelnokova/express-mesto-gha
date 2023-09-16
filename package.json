@@ -11,8 +11,12 @@
   "author": "Julia Chelnokova",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "celebrate": "^15.0.1",
     "express": "^4.18.2",
-    "mongoose": "^7.5.0"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "eslint": "^8.48.0",
