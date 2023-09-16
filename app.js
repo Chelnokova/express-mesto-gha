@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// const { errors, celebrate, Joi } = require('celebrate');
+const { errors, celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
@@ -26,8 +26,22 @@ app.use('/', express.json());
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().min(2).max(30)
+      .email(),
+    password: Joi.string().required().min(6),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().regex(/^:?https?:\/\/(www\.)?[a-zA-Z\d-]+\.[\w\d\-.~:/?#[\]@!$&'()*+,;=]{2,}#?$/),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+}), createUser);
 
 app.use('*', (req, res) => {
   res.status(NOT_FOUND).send({ message: 'Неправильный путь' });
@@ -39,6 +53,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).send({ message });
   next();
 });
+app.use(errors());
 
 app.listen(PORT, () => {
   console.log('Сервер запущен');
