@@ -6,7 +6,7 @@ const { rateLimit } = require('express-rate-limit');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error-handler');
-const { validationAuth, validationRegister } = require('./controllers/users');
+const { validationAuth, validationRegister } = require('./utils/validation-joi');
 
 const { PORT = 3000 } = process.env;
 
