@@ -45,7 +45,6 @@ const deleteCard = (req, res, next) => {
         .catch(next);
     })
     .catch((err) => {
-      console.log(err);
       if (err.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные при создании карточки.');
       } else {
