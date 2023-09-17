@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
+const ConflictError = require('../errors/ConflictError');
 
 const CREATED = 201;
 
@@ -36,14 +36,6 @@ const getUser = (req, res, next) => {
     });
 };
 
-const getCurrentUser = (req, res, next) => {
-  User.findById(req.user)
-    .then((user) => {
-      res.send({ user });
-    })
-    .catch(next);
-};
-
 const createUser = (req, res, next) => {
   const {
     name,
@@ -72,9 +64,9 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new UnauthorizedError('Пользователь с таким email уже существует.'));
+        next(new ConflictError('Пользователь с таким email уже существует.'));
       } if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при создании пользователя.');
+        next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
       } else {
         next(err);
       }
@@ -89,6 +81,14 @@ const login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
 
       res.send({ token });
+    })
+    .catch(next);
+};
+
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.send({ user });
     })
     .catch(next);
 };
