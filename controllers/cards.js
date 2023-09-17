@@ -31,17 +31,21 @@ const getCards = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail()
-    .then((response, card) => {
-      if (!card.owner.equals(req.user._id)) {
-        throw new ForbiddenError('Нельзя удалять карточки других пользователей.');
-      } else if (response === null) {
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (!card) {
         throw new NotFoundError('Карточка с указанным _id не найдена.');
+      } else if (!card.owner.equals(req.user._id)) {
+        throw new ForbiddenError('Нельзя удалять карточки других пользователей.');
       }
-      return res.status(OK_STATUS).send({ message: 'Успешно удалено.' });
+      card.deleteOne()
+        .then(() => {
+          res.status(OK_STATUS).send({ message: 'Успешно удалено.' });
+        })
+        .catch(next);
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные при создании карточки.');
       } else {
